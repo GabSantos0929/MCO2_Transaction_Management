@@ -70,13 +70,14 @@ def insert_movie():
     
     try:
         central_is_online = is_central_node_up()
-        set_db_config()
-        set_isolation_level(session['db_config'], 'REPEATABLE READ')
         if central_is_online:
+            set_db_config()
+            set_isolation_level(session['db_config'], 'REPEATABLE READ')
             execute_query(query, values)
+            flash('Movie added successfully!', 'success')
         else:
             write_transaction_to_file(query, values)
-        flash('Movie added successfully!', 'success')
+            flash('The movie will be added once the central node is online!', 'success')
     except Exception as e:
         flash('An error occurred: {}'.format(str(e)), 'danger')
     
@@ -122,13 +123,14 @@ def update_movie():
     
     try:
         central_is_online = is_central_node_up()
-        set_db_config()
-        set_isolation_level(session['db_config'], 'REPEATABLE READ')
         if central_is_online:
+            set_db_config()
+            set_isolation_level(session['db_config'], 'REPEATABLE READ')
             execute_query(query, values)
+            flash('Movie updated successfully!', 'success')
         else:
             write_transaction_to_file(query, values)
-        flash('Movie updated successfully!', 'success')
+            flash('The movie will be updated once the central node is online!', 'success')
     except Exception as e:
         flash('An error occurred: {}'.format(str(e)), 'danger')
     
@@ -151,13 +153,14 @@ def delete_movie():
             flash('Movie not found!', 'danger')
             return redirect(url_for('index'))
         central_is_online = is_central_node_up()
-        set_db_config()
-        set_isolation_level(session['db_config'], 'REPEATABLE READ')
         if central_is_online:
+            set_db_config()
+            set_isolation_level(session['db_config'], 'REPEATABLE READ')
             execute_query(query, (movie_id,))
+            flash('Movie deleted successfully!', 'success')
         else:
             write_transaction_to_file(query, (movie_id,))
-        flash('Movie deleted successfully!', 'success')
+            flash('The movie will be deleted once the central node is online!', 'success')
     except Exception as e:
         flash('An error occurred: {}'.format(str(e)), 'danger')
     
