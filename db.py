@@ -19,13 +19,7 @@ def get_db_connection():
     )
 
 def execute_query(query, values):
-    conn = mysql.connector.connect(
-            host="ccscloud.dlsu.edu.ph",
-            user="username",
-            password="password",
-            database="Complete",
-            port=20060
-        )
+    conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute(query, values)
     conn.commit()
@@ -78,13 +72,7 @@ def execute_missed_transactions():
         with open('missed_transactions.txt', 'r') as file:
             transactions = file.readlines()
         
-        conn = mysql.connector.connect(
-            host="ccscloud.dlsu.edu.ph",
-            user="username",
-            password="password",
-            database="Complete",
-            port=20060
-        )
+        conn = get_db_connection()
         cursor = conn.cursor()
         
         for transaction in transactions:

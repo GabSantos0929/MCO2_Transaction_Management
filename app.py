@@ -5,6 +5,15 @@ from db import execute_query, fetch_one, fetch_all, set_isolation_level, is_cent
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Ensure you have a secret key for flash messages
 
+def set_db_config():
+    session['db_config'] = {
+        'host': "ccscloud.dlsu.edu.ph",
+        'user': "username",
+        'password': "password",
+        'database': "Complete",
+        'port': 20060
+    }
+
 def node_failure(node):
     if node == 'Complete':
         central_node_status = is_central_node_up()
@@ -29,7 +38,8 @@ def index():
     if node_status:
         return render_template('index.html')
 
-    if node == 'Complete' and not node_status:
+    central_node_status = is_central_node_up()
+    if central_node_status:
         try:
             execute_missed_transactions()
         except Exception as e:
@@ -60,6 +70,7 @@ def insert_movie():
     
     try:
         central_is_online = is_central_node_up()
+        set_db_config()
         set_isolation_level(session['db_config'], 'REPEATABLE READ')
         if central_is_online:
             execute_query(query, values)
@@ -111,6 +122,7 @@ def update_movie():
     
     try:
         central_is_online = is_central_node_up()
+        set_db_config()
         set_isolation_level(session['db_config'], 'REPEATABLE READ')
         if central_is_online:
             execute_query(query, values)
@@ -139,6 +151,7 @@ def delete_movie():
             flash('Movie not found!', 'danger')
             return redirect(url_for('index'))
         central_is_online = is_central_node_up()
+        set_db_config()
         set_isolation_level(session['db_config'], 'REPEATABLE READ')
         if central_is_online:
             execute_query(query, (movie_id,))
